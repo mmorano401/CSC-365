@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\mgmor\\Downloads\\javax.json-1.0.jar",
+        "c:\\Users\\mgmor\\Downloads\\jsoup-1.16.1.jar"
+    ]
+}
