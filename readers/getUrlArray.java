@@ -9,7 +9,7 @@ import javax.json.JsonReaderFactory;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class readPages {
+public class getUrlArray {
     public static JsonArray pages() {
         // Path path = Paths.get(System.getProperty("user.home")+ "/data/webpages.json");
         String path = System.getProperty("user.home")+ "\\source\\repos\\CSC365\\data\\webpages.json";
