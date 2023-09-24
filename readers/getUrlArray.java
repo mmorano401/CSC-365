@@ -11,13 +11,16 @@ import java.io.IOException;
 
 public class getUrlArray {
     public static JsonArray pages() {
-        // Path path = Paths.get(System.getProperty("user.home")+ "/data/webpages.json");
+        // Path to JSON doc with list of URLs contained within a JSON array
         String path = System.getProperty("user.home")+ "\\source\\repos\\CSC365\\data\\webpages.json";
-        System.out.println(path);
+        
+        // Create JSON Reader in order to read the URL list 
         JsonReaderFactory factory = Json.createReaderFactory(null);
         
+        // try/catch needed in order to ensure a document is found in the path specified
         try (FileReader fileReader = new FileReader(path);
         JsonReader reader = factory.createReader(fileReader);){
+            // Read JSON doc and create array with URLs
             JsonObject object = reader.readObject();
             JsonArrayBuilder builder = Json.createArrayBuilder();
             JsonArray webpages = object.getJsonArray("webpages");
