@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import javax.json.JsonArray;
 import readers.getUrlArray;
 import readers.getWords;
+import java.util.*;
+import readers.TFIDF;
 
 public class startup{
 
@@ -17,6 +19,15 @@ public class startup{
             words.add(text);
         }
 
-        
+        // get tfidf
+        // user input to set starting index
+        ArrayList<Map<String, Double>> similarity = new ArrayList<>();
+        int starting = 0;
+        for (int x = 0 ; x < array.size() - 1; ++x){
+            if(x != starting){
+                Map<String, Double> tfidf = TFIDF.getSimilarity(words.get(starting), words.get(x));
+                similarity.add(tfidf);
+            }
+        }
     }
 }
