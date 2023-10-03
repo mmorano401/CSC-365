@@ -1,22 +1,15 @@
 package readers;
 
 import java.util.*;
-import structures.HT;
 
 public class TFIDF{
-   
-    public static Map<String, Double> getSimilarity(String starting, String comparing){
-        List<String> token1 = tokenize(starting);
-        List<String> token2 = tokenize(comparing);
+    public static double similarity(String one, String two){
+        // break document strings into tokens
+        List<String> oneTokens = tokenize(one);
+        List<String> twoTokens = tokenize(two);
 
-        Map<String, Double> tfOne = getTF(token1);
-
-        Map<String, Integer> numDocsWord = getNumDocsWord(token1);
-        numDocsWord = getNumDocsWord(token2);
-
-        Map<String, Double> idf = getIDF(2, numDocsWord);
-
-        Map<String, Double> similarity = getTFIDF(tfOne, idf);
+        // calculate TF/IDF from the two pages comparing
+        double similarity = getTFIDF(oneTokens, twoTokens);
 
         return similarity;
     }
@@ -26,55 +19,61 @@ public class TFIDF{
         return Arrays.asList(words);
     }
 
-    private static Map<String, Double> getTF(List<String> doc){
-        Map<String, Double> frequency = new HashMap<>();
-        HT freq = new HT();
-        for (String word : doc){
-            // puts word and adds 1 each time the word is used
-            frequency.put(word, frequency.getOrDefault(word,0.0)+1);
-            freq.add(word, );
+    private static double getTFIDF(List<String> one, List<String> two){
+        // use Hash Map to put frequency of term and the term itself together in order to compare
+        Map<String, Integer> freq1 = termFreq(one);
+        Map<String, Integer> freq2 = termFreq(two);
+
+        // get denomenator of TF/IDF equation
+        Map<String, Double> inverseFreq = getIDF(Arrays.asList(one, two));
+
+        double dotProduct = 0.0;
+        double magnitude1 = 0.0;
+        double magnitude2 = 0.0;
+
+        for (String term : freq1.keySet()) {
+            double tfidf1 = freq1.get(term) * inverseFreq.getOrDefault(term, 0.0);
+            double tfidf2 = freq2.getOrDefault(term, 0) * inverseFreq.getOrDefault(term, 0.0);
+
+            dotProduct += tfidf1 * tfidf2;
+            magnitude1 += tfidf1 * tfidf1;
+            magnitude2 += tfidf2 * tfidf2;
         }
-        int count = doc.size();
-        for(Map.Entry<String, Double> info : frequency.entrySet())
-        {
-            double intFreq = info.getValue();
-            info.setValue(intFreq/count);
+
+        // Calculate the cosine similarity
+        if (magnitude1 == 0.0 || magnitude2 == 0.0) {
+            return 0.0; // Handle the case of empty documents or zero-length vectors
+        } else {
+            return dotProduct / (Math.sqrt(magnitude1) * Math.sqrt(magnitude2));
         }
-        return frequency;
+
     }
 
-    private static Map<String, Integer> getNumDocsWord(List<String> docs){
-        Map<String, Integer> numOfDocs = new HashMap<>();
-        for(String word : docs)
-        {
-            for(Map.Entry<String, Integer> entry : numOfDocs.entrySet())
-            {
-                if (word.equals(entry.getKey()))
-                {
-                    numOfDocs.put(word, numOfDocs.getOrDefault(word, 0)+1);
-                }
+    private static Map<String, Integer> termFreq(List<String> text){
+        Map<String, Integer> freq = new HashMap<>();
+        for (String word: text){
+            freq.put(word, freq.getOrDefault(word, 0) + 1);
+        }
+        return freq;
+    }
+
+    private static Map<String, Double> getIDF(List<List<String>> docs){
+        Map<String, Integer> docFreq = new HashMap<>();
+
+
+        for (List<String> doc : docs){
+            Set<String> uniqueness = new HashSet<>(doc);
+            for(String word : uniqueness){
+                docFreq.put(word, docFreq.getOrDefault(word, 0)+1);
             }
         }
-        return numOfDocs;
-    }
 
-    private static Map<String, Double> getIDF(int numDocs, Map<String, Integer> termFreqDocs){
         Map<String, Double> idf = new HashMap<>();
-        for(Map.Entry<String, Integer> count: termFreqDocs.entrySet()){
-            idf.put(count.getKey(), Math.log(numDocs/count.getValue()));
+        int number = docs.size();
+        for (String word : docFreq.keySet()){
+            int docFreqNum = docFreq.get(word);
+            idf.put(word, Math.log((double) number / (1 + docFreqNum)));
         }
         return idf;
-    }
-
-    private static Map<String, Double> getTFIDF(Map<String, Double> tf, Map<String, Double> idf){
-        Map<String, Double> tfidf = new HashMap<>();
-        for(Map.Entry<String, Double> term : tf.entrySet()){
-            for(Map.Entry<String, Double> inverse : idf.entrySet()){
-                if(term.getKey().equals(inverse.getKey())){
-                    tfidf.put(term.getKey(), term.getValue()*inverse.getValue());
-                }
-            }
-        }
-        return tfidf;
     }
 }
