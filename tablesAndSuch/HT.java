@@ -40,6 +40,16 @@ public class HT implements java.io.Serializable {
 	return null;
     }
 
+	public Double getValue(Object key) {
+	int h = key.hashCode();
+	int i = h & (table.length - 1);
+	for (Node e = table[i]; e != null; e = e.next) {
+	    if (key.equals(e.key))
+		return e.count;
+	}
+	return null;
+    }
+
 
     public void add(Object key, double count) {
 	int h = key.hashCode();
