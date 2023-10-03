@@ -40,6 +40,7 @@ public class HT implements java.io.Serializable {
 	return null;
     }
 
+
     public void add(Object key, double count) {
 	int h = key.hashCode();
 	int i = h & (table.length - 1);
@@ -104,10 +105,10 @@ public class HT implements java.io.Serializable {
 	}
     }
 
-    void printAll() {
+    public void printAll() {
         for (int i = 0; i < table.length; ++i)
             for (Node e = table[i]; e != null; e = e.next)
-                System.out.println(e.key);
+                System.out.println(e.key + " : " + e.count);
     }
 	
     private void writeObject(ObjectOutputStream s) throws Exception {

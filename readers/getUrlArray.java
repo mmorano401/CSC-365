@@ -12,7 +12,7 @@ import java.io.IOException;
 public class getUrlArray {
     public static JsonArray pages() {
         // Path to JSON doc with list of URLs contained within a JSON array
-        String path = System.getProperty("user.home")+ "\\source\\repos\\CSC365\\data\\webpages.json";
+        String path = System.getProperty("user.home")+ "\\source\\repos\\CSC-365\\data\\webpages.json";
         
         // Create JSON Reader in order to read the URL list 
         JsonReaderFactory factory = Json.createReaderFactory(null);
