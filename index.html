@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
   <head>
@@ -13,7 +14,11 @@
 
     <select class="form-select" aria-label"Select Article">
       <option selected><center>Pick Article</center></option>
-      
+      <%=
+        for(String url : urls){
+          <option>startup.urls</option>
+        }
+      %>
     </select>
 <p></p>
 
