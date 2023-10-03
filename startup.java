@@ -5,6 +5,7 @@ import readers.getUrlArray;
 import readers.getWords;
 import java.util.*;
 import readers.TFIDF;
+import readers.ComparingDocuments;
 
 public class startup{
 
@@ -19,15 +20,18 @@ public class startup{
             words.add(text);
         }
 
-        // get tfidf
-        // user input to set starting index
-        ArrayList<Map<String, Double>> similarity = new ArrayList<>();
-        int starting = 0;
+        // remove common terms
+        ArrayList<ArrayList<String>> rareWordsList = new ArrayList<>();
         for (int x = 0 ; x < array.size() - 1; ++x){
-            if(x != starting){
-                Map<String, Double> tfidf = TFIDF.getSimilarity(words.get(starting), words.get(x));
-                similarity.add(tfidf);
-            }
+            ArrayList<String> uncommon = TFIDF.getTFIDFValue(words.get(x));
+            rareWordsList.add(uncommon);
+        }
+
+        // get similarity
+        Map<Integer, Integer> similarityList = ComparingDocuments.similarity(rareWordsList);
+
+        for (Map.Entry<Integer,Integer> entry : similarityList.entrySet()) {
+            System.out.println(entry.getKey());
         }
     }
 }
