@@ -1,6 +1,8 @@
 package readers;
 
 import java.io.IOException;
+import java.util.Map;
+
 import javax.json.JsonObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,5 +30,23 @@ public class getWords {
         }
         
         return text.toString();
+    }
+
+    public static Map<String, String> getTitles(Map<String, String> list, String url) throws IOException{
+        try{
+            Document doc = Jsoup.connect(url).get();
+            String title = doc.title();
+            String parsedUrl = url;
+            list.put(title, parsedUrl);
+            return list;
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
+        
+        
+        
+        
     }
 }
