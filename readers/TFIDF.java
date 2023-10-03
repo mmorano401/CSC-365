@@ -4,10 +4,8 @@ import java.util.*;
 import tablesAndSuch.HT;
 
 public class TFIDF{
-
-    public static int userSelection;
    
-    public static HT getTFIDFValue(ArrayList<String> docs){
+    public static HT getTFIDFValue(ArrayList<String> docs, int indexChoice){
         ArrayList<List<String>> tokenizedList = new ArrayList<>();
         for (String words : docs) {
             tokenizedList.add(tokenize(words));
@@ -23,12 +21,13 @@ public class TFIDF{
         ArrayList<Map<String, Double>> tfidf = getTFIDF(tfAll, idfAll);
 
         // user makes selection
-        userSelection = 0;
-        Map<String, Double> selected = tfidf.get(userSelection);
+
+        
+        Map<String, Double> selected = tfidf.get(indexChoice);
 
         Map<Integer, Double> cosine = new HashMap<>();
         for (int i = 0; i < tfidf.size(); i++) {
-            if(i != userSelection){
+            if(i != indexChoice){
                 double similarity = cosineVector(selected, tfidf.get(i));
                 cosine.put(i,similarity);
             }
@@ -60,15 +59,13 @@ public class TFIDF{
     private static ArrayList<Map<String, Double>> getTFIDF(ArrayList<Map<String, Double>> tfAll, Map<String, Double> idfAll) {
         for (Map<String,Double> map : tfAll) {
             for (Map.Entry<String,Double> entry : map.entrySet()) {
-                double tfidf = entry.getValue() * getIDFValue(entry.getKey(), idfAll);
-                map.put(entry.getKey(), tfidf);
+                if(idfAll.containsKey(entry.getKey())){
+                    double tfidf = entry.getValue() * idfAll.get(entry.getKey());
+                    map.put(entry.getKey(), tfidf);
+                }
             }
         }
         return tfAll;
-    }
-
-    private static Double getIDFValue(String word, Map<String, Double> idfAll) {
-        return idfAll.get(word);
     }
 
     private static List<String> tokenize(String doc){
