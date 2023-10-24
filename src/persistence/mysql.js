@@ -39,7 +39,7 @@ async function init() {
 
     return new Promise((acc, rej) => {
         pool.query(
-            'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean) DEFAULT CHARSET utf8mb4',
+            'CREATE TABLE IF NOT EXISTS web_items (id varchar(36), name varchar(255), completed boolean) DEFAULT CHARSET utf8mb4',
             err => {
                 if (err) return rej(err);
 
@@ -61,7 +61,7 @@ async function teardown() {
 
 async function getItems() {
     return new Promise((acc, rej) => {
-        pool.query('SELECT * FROM todo_items', (err, rows) => {
+        pool.query('SELECT * FROM web_items', (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -76,7 +76,7 @@ async function getItems() {
 
 async function getItem(id) {
     return new Promise((acc, rej) => {
-        pool.query('SELECT * FROM todo_items WHERE id=?', [id], (err, rows) => {
+        pool.query('SELECT * FROM web_items WHERE id=?', [id], (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -92,7 +92,7 @@ async function getItem(id) {
 async function storeItem(item) {
     return new Promise((acc, rej) => {
         pool.query(
-            'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
+            'INSERT INTO web_items (id, name, completed) VALUES (?, ?, ?)',
             [item.id, item.name, item.completed ? 1 : 0],
             err => {
                 if (err) return rej(err);
@@ -105,7 +105,7 @@ async function storeItem(item) {
 async function updateItem(id, item) {
     return new Promise((acc, rej) => {
         pool.query(
-            'UPDATE todo_items SET name=?, completed=? WHERE id=?',
+            'UPDATE web_items SET name=?, completed=? WHERE id=?',
             [item.name, item.completed ? 1 : 0, id],
             err => {
                 if (err) return rej(err);
@@ -117,7 +117,7 @@ async function updateItem(id, item) {
 
 async function removeItem(id) {
     return new Promise((acc, rej) => {
-        pool.query('DELETE FROM todo_items WHERE id = ?', [id], err => {
+        pool.query('DELETE FROM web_items WHERE id = ?', [id], err => {
             if (err) return rej(err);
             acc();
         });
