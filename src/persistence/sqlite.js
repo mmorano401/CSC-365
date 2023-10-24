@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
-const location = process.env.SQLITE_DB_LOCATION || '/etc/todos/todo.db';
+const location = process.env.SQLITE_DB_LOCATION || '/etc/wikirecs/links.db';
 
 let db, dbAll, dbRun;
 
@@ -18,7 +18,7 @@ function init() {
                 console.log(`Using sqlite database at ${location}`);
 
             db.run(
-                'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean)',
+                'CREATE TABLE IF NOT EXISTS web_items (id varchar(36), name varchar(255), completed boolean)',
                 (err, result) => {
                     if (err) return rej(err);
                     acc();
@@ -39,7 +39,7 @@ async function teardown() {
 
 async function getItems() {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items', (err, rows) => {
+        db.all('SELECT * FROM web_items', (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -54,7 +54,7 @@ async function getItems() {
 
 async function getItem(id) {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows) => {
+        db.all('SELECT * FROM web_items WHERE id=?', [id], (err, rows) => {
             if (err) return rej(err);
             acc(
                 rows.map(item =>
@@ -70,7 +70,7 @@ async function getItem(id) {
 async function storeItem(item) {
     return new Promise((acc, rej) => {
         db.run(
-            'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
+            'INSERT INTO web_items (id, name, completed) VALUES (?, ?, ?)',
             [item.id, item.name, item.completed ? 1 : 0],
             err => {
                 if (err) return rej(err);
@@ -83,7 +83,7 @@ async function storeItem(item) {
 async function updateItem(id, item) {
     return new Promise((acc, rej) => {
         db.run(
-            'UPDATE todo_items SET name=?, completed=? WHERE id = ?',
+            'UPDATE web_items SET name=?, completed=? WHERE id = ?',
             [item.name, item.completed ? 1 : 0, id],
             err => {
                 if (err) return rej(err);
@@ -95,7 +95,7 @@ async function updateItem(id, item) {
 
 async function removeItem(id) {
     return new Promise((acc, rej) => {
-        db.run('DELETE FROM todo_items WHERE id = ?', [id], err => {
+        db.run('DELETE FROM web_items WHERE id = ?', [id], err => {
             if (err) return rej(err);
             acc();
         });
