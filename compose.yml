@@ -19,15 +19,9 @@ services:
          - path: /dev/sdb
            rate: 30
   backend:
-    image: wikirecs/database
+    image: wikirecs
     volumes:
       - db-data:/etc/data
-
-  backup:
-    image: backup-service
-    volumes:
-      - db-data:/var/lib/backup/data
-
 volumes:
   db-data:
     name: "wikirecs_db"
